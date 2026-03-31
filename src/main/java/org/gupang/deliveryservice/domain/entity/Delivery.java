@@ -3,6 +3,7 @@ package org.gupang.deliveryservice.domain.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.gupang.common.entity.BaseEntity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -10,7 +11,7 @@ import java.util.UUID;
 @Entity(name = "p_delivery")
 @Getter
 @NoArgsConstructor
-public class Delivery {
+public class Delivery extends BaseEntity {
 
     @Id
     @Column(name="delivery_id")//yaml로 스네이크로 변경가능하다. 라고 한 거 같은데....일단 이렇게 설정
