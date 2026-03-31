@@ -4,12 +4,18 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.gupang.common.entity.BaseEntity;
+import org.gupang.common.exception.CustomException;
+import org.gupang.common.exception.ErrorCode;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "p_delivery")
 @Getter
+@SQLDelete(sql = "UPDATE p_delivery SET deleted_at = now() WHERE delivery_id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @NoArgsConstructor
 public class Delivery extends BaseEntity {
 
@@ -47,21 +53,22 @@ public class Delivery extends BaseEntity {
 
     public void start() {
         if (this.status != DeliveryStatus.READY) {
-            throw new IllegalStateException();
-            //todo ErrorCode적용
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
         }
         this.status = DeliveryStatus.IN_TRANSIT;
     }
 
     public void complete() {
         if( this.status != DeliveryStatus.IN_TRANSIT){
-            throw new IllegalStateException();
-            //todo ErrorCode적용
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
         }
         this.status = DeliveryStatus.DELIVERED;
     }
 
     public void cancel() {
+        if (this.status == DeliveryStatus.DELIVERED) {
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
+        }
         this.status = DeliveryStatus.CANCELLED;
     }
 
@@ -71,7 +78,8 @@ public class Delivery extends BaseEntity {
             UUID endHubId,
             String address,
             String addressDetail,
-            String recipientName
+            String recipientName,
+            LocalDateTime deliveryDeadline
     ) {
         Delivery delivery = new Delivery();
         delivery.deliveryId = UUID.randomUUID();
@@ -82,6 +90,7 @@ public class Delivery extends BaseEntity {
         delivery.addressDetail = addressDetail;
         delivery.recipientName = recipientName;
         delivery.status = DeliveryStatus.READY;
+        delivery.deliveryDeadline = deliveryDeadline;
         return delivery;
     }
 }
