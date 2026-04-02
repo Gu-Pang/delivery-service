@@ -5,10 +5,7 @@ import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
 import org.gupang.deliveryservice.application.service.DeliveryService;
 import org.gupang.deliveryservice.presentation.dto.request.CreateDeliveryRequestDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,6 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
+
+    @GetMapping
+    public String test() {
+        return "ok";
+    }
 
     @PostMapping("/test")
     public ResponseEntity<Void> createDelivery(@RequestBody CreateDeliveryRequestDto dto){
