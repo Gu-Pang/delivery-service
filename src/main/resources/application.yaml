@@ -2,6 +2,8 @@
 spring:
   application:
     name: delivery-server
+  profiles:
+    active: dev
   datasource:
     url: jdbc:postgresql://localhost:5432/gu_pang
     username: postgres

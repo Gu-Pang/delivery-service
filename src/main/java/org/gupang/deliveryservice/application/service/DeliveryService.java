@@ -41,10 +41,11 @@ public class DeliveryService {
                     LocalDateTime.now().plusDays(1)
                     //todo 추후 계산로직 추가
             );
+            deliveryRepository.save(delivery);
         }catch (FeignException.FeignClientException e){
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
             //todo ErrorCode COMPANY_NOT_FOUND추가해서 적용
         }
-//        deliveryRepository.save(delivery);
+
     }
 }
