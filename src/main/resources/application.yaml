@@ -1,7 +1,7 @@
 
 spring:
   application:
-    name: delivery-service
+    name: delivery-server
   datasource:
     url: jdbc:postgresql://localhost:5432/gu_pang
     username: postgres
