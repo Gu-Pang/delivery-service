@@ -5,11 +5,15 @@ import lombok.Getter;
 import org.gupang.common.entity.BaseEntity;
 import org.gupang.common.exception.CustomException;
 import org.gupang.common.exception.ErrorCode;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "p_delivery_route_records")
+@SQLDelete(sql = "UPDATE p_delivery_route_records SET deleted_at = now() WHERE route_record_id = ?")
+@SQLRestriction("deleted_at IS NULL")
 @Getter
 public class DeliveryRouteRecords extends BaseEntity {
 
@@ -24,7 +28,13 @@ public class DeliveryRouteRecords extends BaseEntity {
     private UUID startHubId;
 
     @Column
+    private String startHubName;
+
+    @Column
     private UUID endHubId;
+
+    @Column
+    private String endHubName;
 
     @Column
     private Double estimatedDistance; //예상거리
@@ -50,14 +60,18 @@ public class DeliveryRouteRecords extends BaseEntity {
 
     public static DeliveryRouteRecords create(
             UUID startHubId,
+            String startHubName,
             UUID endHubId,
+            String endHubName,
             Double distance,
             Integer duration,
             int sequence) {
             DeliveryRouteRecords routeRecords = new DeliveryRouteRecords();
             routeRecords.routeRecordId = UUID.randomUUID();
             routeRecords.startHubId = startHubId;
+            routeRecords.startHubName = startHubName;
             routeRecords.endHubId = endHubId;
+            routeRecords.endHubName = endHubName;
             routeRecords.estimatedDistance = distance;
             routeRecords.estimatedDuration = duration;
             routeRecords.sequence = sequence;

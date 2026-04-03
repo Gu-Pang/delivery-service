@@ -106,9 +106,11 @@ public class Delivery extends BaseEntity {
         for (HubResponseDto hub : hubRoutes) {
             DeliveryRouteRecords route = DeliveryRouteRecords.create(
                     hub.startHubId(),
+                    hub.startHubName(),
                     hub.endHubId(),
-                    hub.distance(),
-                    hub.duration(),
+                    hub.endHubName(),
+                    hub.estimatedDistance(),
+                    hub.estimatedDuration(),
                     sequence++
             );
             addRoute(route);
