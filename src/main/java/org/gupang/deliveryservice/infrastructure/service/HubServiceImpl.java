@@ -1,7 +1,7 @@
 package org.gupang.deliveryservice.infrastructure.service;
 
 import lombok.RequiredArgsConstructor;
-import org.gupang.deliveryservice.application.dto.HubInfo;
+import org.gupang.deliveryservice.application.model.HubInfo;
 import org.gupang.deliveryservice.application.service.HubService;
 import org.gupang.deliveryservice.infrastructure.client.HubClient;
 import org.gupang.deliveryservice.infrastructure.dto.HubResponseDto;

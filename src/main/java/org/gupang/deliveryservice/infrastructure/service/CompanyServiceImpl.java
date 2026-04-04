@@ -1,7 +1,7 @@
 package org.gupang.deliveryservice.infrastructure.service;
 
 import lombok.RequiredArgsConstructor;
-import org.gupang.deliveryservice.application.dto.CompanyInfo;
+import org.gupang.deliveryservice.application.model.CompanyInfo;
 import org.gupang.deliveryservice.application.service.CompanyService;
 import org.gupang.deliveryservice.infrastructure.client.CompanyClient;
 import org.gupang.deliveryservice.infrastructure.dto.CompanyResponseDto;

@@ -1,4 +1,4 @@
-package org.gupang.deliveryservice.application.dto;
+package org.gupang.deliveryservice.application.model;
 
 import org.gupang.deliveryservice.infrastructure.dto.HubResponseDto;
 

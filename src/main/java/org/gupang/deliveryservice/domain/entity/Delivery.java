@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.gupang.common.entity.BaseEntity;
 import org.gupang.common.exception.CustomException;
 import org.gupang.common.exception.ErrorCode;
-import org.gupang.deliveryservice.application.dto.HubInfo;
+import org.gupang.deliveryservice.application.model.HubInfo;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 

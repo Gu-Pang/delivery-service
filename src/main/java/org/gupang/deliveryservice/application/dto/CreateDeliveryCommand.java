@@ -1,5 +1,6 @@
 package org.gupang.deliveryservice.application.dto;
 
+import org.gupang.deliveryservice.application.model.CompanyInfo;
 import org.gupang.deliveryservice.domain.entity.Delivery;
 
 import java.time.LocalDateTime;
