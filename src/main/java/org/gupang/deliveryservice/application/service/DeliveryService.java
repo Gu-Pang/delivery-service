@@ -8,10 +8,13 @@ import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
 import org.gupang.deliveryservice.domain.entity.Delivery;
 import org.gupang.deliveryservice.domain.repository.DeliveryRepository;
 import org.gupang.deliveryservice.infrastructure.client.CompanyClient;
+import org.gupang.deliveryservice.infrastructure.client.HubClient;
 import org.gupang.deliveryservice.infrastructure.dto.CompanyResponseDto;
+import org.gupang.deliveryservice.infrastructure.dto.HubResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,6 +22,7 @@ import java.util.UUID;
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final CompanyClient companyClient;
+    private final HubClient hubClient;
 
 
 //    public void createDelivery(OrderReadyEvent event){
@@ -31,6 +35,8 @@ public class DeliveryService {
             CompanyResponseDto receiver = companyClient.getCompany(command.receiverId());
             UUID endHubId = receiver.hubId();
 
+            List<HubResponseDto> hubRoutes = hubClient.getHub(startHubId, endHubId);
+
             Delivery delivery = Delivery.create(
                     command.orderId(),
                     startHubId,
@@ -41,6 +47,8 @@ public class DeliveryService {
                     LocalDateTime.now().plusDays(1)
                     //todo 추후 계산로직 추가
             );
+            delivery.createRoutes(hubRoutes);
+
             deliveryRepository.save(delivery);
         }catch (FeignException.FeignClientException e){
             throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);

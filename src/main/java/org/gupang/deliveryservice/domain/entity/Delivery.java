@@ -6,10 +6,13 @@ import lombok.NoArgsConstructor;
 import org.gupang.common.entity.BaseEntity;
 import org.gupang.common.exception.CustomException;
 import org.gupang.common.exception.ErrorCode;
+import org.gupang.deliveryservice.infrastructure.dto.HubResponseDto;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "p_delivery")
@@ -92,5 +95,54 @@ public class Delivery extends BaseEntity {
         delivery.status = DeliveryStatus.READY;
         delivery.deliveryDeadline = deliveryDeadline;
         return delivery;
+    }
+
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeliveryRouteRecords> routes = new ArrayList<>();
+
+    public void createRoutes(List<HubResponseDto> hubRoutes){
+        int sequence = 1;
+
+        for (HubResponseDto hub : hubRoutes) {
+            DeliveryRouteRecords route = DeliveryRouteRecords.create(
+                    hub.startHubId(),
+                    hub.startHubName(),
+                    hub.endHubId(),
+                    hub.endHubName(),
+                    hub.estimatedDistance(),
+                    hub.estimatedDuration(),
+                    sequence++
+            );
+            addRoute(route);
+        }
+    }
+
+    //route확장을 위한 protected
+    protected void addRoute(DeliveryRouteRecords route) {
+        routes.add(route);
+        route.setDelivery(this);
+    }
+
+    private DeliveryRouteRecords findNextRoute(DeliveryRouteRecords current){
+        return routes.stream()
+                .filter(r -> r.getSequence() == current.getSequence() + 1)
+                .findFirst()//찾은 것중에 처음을 반환
+                .orElse(null);
+    }
+    public void completeRoute(UUID routeId) {
+        DeliveryRouteRecords current = routes.stream()
+                .filter(r -> r.getRouteRecordId().equals(routeId))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        current.complete();
+
+        DeliveryRouteRecords next = findNextRoute(current);
+
+        if (next != null) {
+            next.start();
+        } else {
+            this.complete(); // 마지막이면 배송 완료?
+        }
     }
 }
