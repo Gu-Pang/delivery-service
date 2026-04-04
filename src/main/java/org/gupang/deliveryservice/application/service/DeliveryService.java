@@ -4,49 +4,34 @@ import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.gupang.common.exception.CustomException;
 import org.gupang.common.exception.ErrorCode;
+import org.gupang.deliveryservice.application.dto.CompanyInfo;
 import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
+import org.gupang.deliveryservice.application.dto.HubInfo;
 import org.gupang.deliveryservice.domain.entity.Delivery;
 import org.gupang.deliveryservice.domain.repository.DeliveryRepository;
-import org.gupang.deliveryservice.infrastructure.client.CompanyClient;
-import org.gupang.deliveryservice.infrastructure.client.HubClient;
-import org.gupang.deliveryservice.infrastructure.dto.CompanyResponseDto;
-import org.gupang.deliveryservice.infrastructure.dto.HubResponseDto;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
-    private final CompanyClient companyClient;
-    private final HubClient hubClient;
+    private final CompanyService companyService;
+    private final HubService hubService;
 
 
 //    public void createDelivery(OrderReadyEvent event){
     //todo kafka붙일 때 event사용
     public void createDelivery(CreateDeliveryCommand command){
         try {
-            CompanyResponseDto supplier = companyClient.getCompany(command.supplierId());
-            UUID startHubId = supplier.hubId();
+            CompanyInfo supplier = companyService.getCompany(command.supplierId());
+            CompanyInfo receiver = companyService.getCompany(command.receiverId());
 
-            CompanyResponseDto receiver = companyClient.getCompany(command.receiverId());
-            UUID endHubId = receiver.hubId();
+            Delivery delivery = command.toEntity(supplier, receiver);
 
-            List<HubResponseDto> hubRoutes = hubClient.getHub(startHubId, endHubId);
+            List<HubInfo> hubRoutes = hubService.getHub(supplier.hubId(), receiver.hubId());
 
-            Delivery delivery = Delivery.create(
-                    command.orderId(),
-                    startHubId,
-                    endHubId,
-                    command.address(),
-                    command.addressDetail(),
-                    command.recipientName(),
-                    LocalDateTime.now().plusDays(1)
-                    //todo 추후 계산로직 추가
-            );
             delivery.createRoutes(hubRoutes);
 
             deliveryRepository.save(delivery);

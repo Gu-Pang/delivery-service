@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.gupang.common.entity.BaseEntity;
 import org.gupang.common.exception.CustomException;
 import org.gupang.common.exception.ErrorCode;
-import org.gupang.deliveryservice.infrastructure.dto.HubResponseDto;
+import org.gupang.deliveryservice.application.dto.HubInfo;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -100,10 +100,10 @@ public class Delivery extends BaseEntity {
     @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DeliveryRouteRecords> routes = new ArrayList<>();
 
-    public void createRoutes(List<HubResponseDto> hubRoutes){
+    public void createRoutes(List<HubInfo> hubRoutes){
         int sequence = 1;
 
-        for (HubResponseDto hub : hubRoutes) {
+        for (HubInfo hub : hubRoutes) {
             DeliveryRouteRecords route = DeliveryRouteRecords.create(
                     hub.startHubId(),
                     hub.startHubName(),
@@ -114,6 +114,7 @@ public class Delivery extends BaseEntity {
                     sequence++
             );
             addRoute(route);
+            //todo 생성 책임 대부분 route로 이임
         }
     }
 
