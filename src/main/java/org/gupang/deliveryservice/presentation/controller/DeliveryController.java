@@ -6,6 +6,7 @@ import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
 import org.gupang.deliveryservice.application.dto.StartDeliveryCommand;
 import org.gupang.deliveryservice.application.service.DeliveryService;
 import org.gupang.deliveryservice.presentation.dto.request.CreateDeliveryRequestDto;
+import org.gupang.deliveryservice.presentation.dto.response.GetDeliveryResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,12 +19,14 @@ public class DeliveryController {
 
     private final DeliveryService deliveryService;
 
-    @GetMapping
-    public String test() {
-        return "ok";
+    @GetMapping("/{deliveryId}")
+    public ResponseEntity<GetDeliveryResponseDto> getDelivery(
+            @PathVariable UUID deliveryId
+    ) {
+        return ResponseEntity.ok(deliveryService.getDelivery(deliveryId));
     }
 
-    @PostMapping("/test")
+    @PostMapping
     public ResponseEntity<Void> createDelivery(@RequestBody CreateDeliveryRequestDto dto){
         CreateDeliveryCommand command = new CreateDeliveryCommand(
                 dto.orderId(),
@@ -48,7 +51,7 @@ public class DeliveryController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("{routeId}/routecomplete")
+    @PostMapping("/{routeId}/routecomplete")
     public ResponseEntity<Void> completeRoute(@PathVariable UUID routeId){
         CompleteRouteCommand command = new CompleteRouteCommand(routeId);
 

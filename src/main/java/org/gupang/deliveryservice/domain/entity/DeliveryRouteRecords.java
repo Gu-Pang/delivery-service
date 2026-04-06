@@ -37,16 +37,16 @@ public class DeliveryRouteRecords extends BaseEntity {
     private String endHubName;
 
     @Column
-    private Double estimatedDistance; //예상거리
+    private int estimatedDistance; //예상거리
 
     @Column
-    private Integer estimatedDuration; //예상 소요 시간
+    private int estimatedDuration; //예상 소요 시간
 
     @Column
-    private Double actualDistance; //실제 거리
+    private int actualDistance; //실제 거리
 
     @Column
-    private Integer actualDuration; //실제 소요 시간
+    private int actualDuration; //실제 소요 시간
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -63,8 +63,8 @@ public class DeliveryRouteRecords extends BaseEntity {
             String startHubName,
             UUID endHubId,
             String endHubName,
-            Double distance,
-            Integer duration,
+            int distance,
+            int duration,
             int sequence) {
             DeliveryRouteRecords routeRecords = new DeliveryRouteRecords();
             routeRecords.routeRecordId = UUID.randomUUID();

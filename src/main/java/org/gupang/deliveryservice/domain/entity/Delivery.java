@@ -165,4 +165,17 @@ public class Delivery extends BaseEntity {
         }
         this.status = DeliveryStatus.DELIVERED;
     }
+
+    public DeliveryRouteRecords getCurrentRoute() {
+
+        return routes.stream()
+                .filter(r -> r.getRouteStatus() == RouteStatus.IN_PROGRESS)
+                .findFirst()
+                .orElse(
+                        routes.stream()
+                                .filter(r -> r.getRouteStatus() == RouteStatus.READY)
+                                .findFirst()
+                                .orElse(null)
+                );
+    }
 }

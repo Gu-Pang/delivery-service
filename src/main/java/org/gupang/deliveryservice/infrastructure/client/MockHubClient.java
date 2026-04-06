@@ -15,7 +15,7 @@ public class MockHubClient implements HubClient{
     @Override
     public List<HubResponseDto> getHub(UUID StartHubId, UUID endHubId){
         int x = 100;
-        double y = 200d;
+        int y = 200;
         String name1= "name1";
         String name2 = "name2";
         return List.of(new HubResponseDto(
@@ -24,7 +24,14 @@ public class MockHubClient implements HubClient{
                 UUID.randomUUID(),
                 name2,
                 y,
-                x)
+                x),
+                new HubResponseDto(
+                        UUID.randomUUID(),
+                        "name3",
+                        UUID.randomUUID(),
+                        "name4",
+                        y,
+                        x)
                 );
     }
 }
