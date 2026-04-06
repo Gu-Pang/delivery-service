@@ -8,4 +8,6 @@ import java.util.UUID;
 public interface UserService {
 
     List<UserInfo> getUser(UUID hubId);
+
+    void updateStatus(UUID userId, String status);
 }

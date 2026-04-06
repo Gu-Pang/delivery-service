@@ -13,10 +13,10 @@ import java.util.UUID;
 @Profile("prod")
 public interface UserClient {
 
-    @GetMapping("/api/v1/users/delivery-managers")
+    @GetMapping("/api/v1/admin/delivery-managers")
     List<UserResponseDto> getDeliveryManager(@RequestParam UUID hubId);
 
 
-    @PatchMapping("/api/v1/users/{userId}/status")
+    @PatchMapping("/api/v1//users/{userId}/delivery-settings")
     void  updateStaus(@PathVariable UUID userId, @RequestBody UpdateUserStatusRequest request);
 }
