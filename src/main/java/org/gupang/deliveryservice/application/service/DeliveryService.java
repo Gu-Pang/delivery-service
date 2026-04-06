@@ -11,6 +11,8 @@ import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
 import org.gupang.deliveryservice.application.model.HubInfo;
 import org.gupang.deliveryservice.domain.entity.Delivery;
 import org.gupang.deliveryservice.domain.repository.DeliveryRepository;
+import org.gupang.deliveryservice.domain.service.CompanyService;
+import org.gupang.deliveryservice.domain.service.HubService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

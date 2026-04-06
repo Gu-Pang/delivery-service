@@ -2,14 +2,14 @@ package org.gupang.deliveryservice.infrastructure.service;
 
 import lombok.RequiredArgsConstructor;
 import org.gupang.deliveryservice.application.model.CompanyInfo;
-import org.gupang.deliveryservice.application.service.CompanyService;
+import org.gupang.deliveryservice.domain.service.CompanyService;
 import org.gupang.deliveryservice.infrastructure.client.CompanyClient;
 import org.gupang.deliveryservice.infrastructure.dto.CompanyResponseDto;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService {
 
