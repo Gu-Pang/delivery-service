@@ -15,12 +15,13 @@ public record GetDeliveryResponseDto(
 
         List<RouteDto> routes
 ) {
+    //todo Mapper변환이 필요
     public static GetDeliveryResponseDto from(Delivery delivery, DeliveryRouteRecords current) {
         return new GetDeliveryResponseDto(delivery.getDeliveryId(),
                 delivery.getOrderId(),
                 delivery.getStatus().name(),
 
-                new RouteDto(
+                current == null ? null : new RouteDto(
                         current.getRouteRecordId(),
                         current.getStartHubName(),
                         current.getEndHubName(),
