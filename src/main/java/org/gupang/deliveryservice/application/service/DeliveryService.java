@@ -4,6 +4,7 @@ import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.gupang.common.exception.CustomException;
 import org.gupang.common.exception.ErrorCode;
+import org.gupang.deliveryservice.application.dto.CompleteRouteCommand;
 import org.gupang.deliveryservice.application.dto.StartDeliveryCommand;
 import org.gupang.deliveryservice.application.model.CompanyInfo;
 import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
@@ -11,6 +12,7 @@ import org.gupang.deliveryservice.application.model.HubInfo;
 import org.gupang.deliveryservice.domain.entity.Delivery;
 import org.gupang.deliveryservice.domain.repository.DeliveryRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class DeliveryService {
 
 //    public void createDelivery(OrderReadyEvent event){
     //todo kafka붙일 때 event사용
+    @Transactional
     public void createDelivery(CreateDeliveryCommand command){
         try {
             CompanyInfo supplier = companyService.getCompany(command.supplierId());
@@ -43,11 +46,21 @@ public class DeliveryService {
 
     }
 
+    @Transactional
     public void startDelivery(StartDeliveryCommand command) {
 
         Delivery delivery = deliveryRepository.findById(command.deliveryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
         delivery.start();
+    }
+
+    @Transactional
+    public void completeRoute(CompleteRouteCommand command){
+
+        Delivery delivery = deliveryRepository.findByRoutes_RouteRecordId(command.routeId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        delivery.completeRoute(command.routeId());
     }
 }

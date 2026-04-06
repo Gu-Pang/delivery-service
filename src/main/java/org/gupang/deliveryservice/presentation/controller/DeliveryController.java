@@ -1,6 +1,7 @@
 package org.gupang.deliveryservice.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.gupang.deliveryservice.application.dto.CompleteRouteCommand;
 import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
 import org.gupang.deliveryservice.application.dto.StartDeliveryCommand;
 import org.gupang.deliveryservice.application.service.DeliveryService;
@@ -43,6 +44,15 @@ public class DeliveryController {
         StartDeliveryCommand command = new StartDeliveryCommand(id);
 
         deliveryService.startDelivery(command);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("{routeId}/routecomplete")
+    public ResponseEntity<Void> completeRoute(@PathVariable UUID routeId){
+        CompleteRouteCommand command = new CompleteRouteCommand(routeId);
+
+        deliveryService.completeRoute(command);
 
         return ResponseEntity.ok().build();
     }
