@@ -7,7 +7,7 @@ public record HubResponseDto(
         String startHubName,
         UUID endHubId,
         String endHubName,
-        double estimatedDistance,
+        int estimatedDistance,
         int estimatedDuration
 ) {
 }
