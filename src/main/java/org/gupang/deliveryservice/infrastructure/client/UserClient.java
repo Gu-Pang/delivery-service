@@ -1,0 +1,22 @@
+package org.gupang.deliveryservice.infrastructure.client;
+
+import org.gupang.deliveryservice.infrastructure.dto.UpdateUserStatusRequest;
+import org.gupang.deliveryservice.infrastructure.dto.UserResponseDto;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Profile;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@FeignClient(name = "user-service")
+@Profile("prod")
+public interface UserClient {
+
+    @GetMapping("/api/v1/users/delivery-managers")
+    List<UserResponseDto> getDeliveryManager(@RequestParam UUID hubId, @RequestParam String deliveryType);
+
+
+    @PatchMapping("/api/v1/users/{userId}/status")
+    void  updateStaus(@PathVariable UUID userId, @RequestBody UpdateUserStatusRequest request);
+}
