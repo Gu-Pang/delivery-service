@@ -5,11 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.gupang.common.exception.CustomException;
 import org.gupang.common.exception.ErrorCode;
 import org.gupang.deliveryservice.application.dto.CompleteRouteCommand;
+import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
+import org.gupang.deliveryservice.presentation.dto.response.GetDeliveryResponseDto;
 import org.gupang.deliveryservice.application.dto.StartDeliveryCommand;
 import org.gupang.deliveryservice.application.model.CompanyInfo;
-import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
 import org.gupang.deliveryservice.application.model.HubInfo;
 import org.gupang.deliveryservice.domain.entity.Delivery;
+import org.gupang.deliveryservice.domain.entity.DeliveryRouteRecords;
+import org.gupang.deliveryservice.domain.entity.RouteStatus;
 import org.gupang.deliveryservice.domain.repository.DeliveryRepository;
 import org.gupang.deliveryservice.domain.service.CompanyService;
 import org.gupang.deliveryservice.domain.service.HubService;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -65,4 +69,15 @@ public class DeliveryService {
 
         delivery.completeRoute(command.routeId());
     }
+
+    public GetDeliveryResponseDto getDelivery(UUID deliveryId){
+        Delivery delivery = deliveryRepository.findWithRoutes(deliveryId)
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        DeliveryRouteRecords current = delivery.getCurrentRoute();
+
+        return GetDeliveryResponseDto.from(delivery, current);
+    }
+
+
 }
