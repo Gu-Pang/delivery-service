@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.gupang.deliveryservice.application.model.UserInfo;
 import org.gupang.deliveryservice.domain.service.UserService;
 import org.gupang.deliveryservice.infrastructure.client.UserClient;
+import org.gupang.deliveryservice.infrastructure.dto.UpdateUserStatusRequest;
 import org.gupang.deliveryservice.infrastructure.dto.UserResponseDto;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserInfo> getUser(UUID hubId){
         List<UserResponseDto> managers = userClient.getDeliveryManager(hubId);
-        return managers.stream().map(UserInfo::from).toList();
+        List<UserInfo> users = managers.stream().map(UserInfo::from).toList();
+        return users.stream()
+                .filter(userInfo -> "HUB".equals(userInfo.deliveryType()))
+                .filter(u -> "AVAILABLE".equals(u.status()))
+                .toList();
+    }
+
+    @Override
+    public void updateStatus(UUID userId, String staus){
+        userClient.updateStaus(userId, new UpdateUserStatusRequest(staus));
     }
 }
