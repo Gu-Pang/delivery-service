@@ -55,17 +55,24 @@ public class Delivery extends BaseEntity {
 
 
     public void start() {
+        validateStart();
+        this.status = DeliveryStatus.IN_TRANSIT;
+        startFirstRoute();
+    }
+
+    private void validateStart() {
         if (this.status != DeliveryStatus.READY) {
             throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
         }
-        this.status = DeliveryStatus.IN_TRANSIT;
     }
 
-    public void complete() {
-        if( this.status != DeliveryStatus.IN_TRANSIT){
-            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
-        }
-        this.status = DeliveryStatus.DELIVERED;
+    private void startFirstRoute() {
+        DeliveryRouteRecords first = routes.stream()
+                .filter(r -> r.getSequence() == 1)
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        first.start();
     }
 
     public void cancel() {
@@ -131,10 +138,8 @@ public class Delivery extends BaseEntity {
                 .orElse(null);
     }
     public void completeRoute(UUID routeId) {
-        DeliveryRouteRecords current = routes.stream()
-                .filter(r -> r.getRouteRecordId().equals(routeId))
-                .findFirst()
-                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        DeliveryRouteRecords current = findRoute(routeId);
 
         current.complete();
 
@@ -143,7 +148,21 @@ public class Delivery extends BaseEntity {
         if (next != null) {
             next.start();
         } else {
-            this.complete(); // 마지막이면 배송 완료?
+            completeDelivery();
         }
+    }
+
+    private DeliveryRouteRecords findRoute(UUID routeId) {
+        return routes.stream()
+                .filter(r -> r.getRouteRecordId().equals(routeId))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+    }
+
+    private void completeDelivery() {
+        if (this.status != DeliveryStatus.IN_TRANSIT) {
+            throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
+        }
+        this.status = DeliveryStatus.DELIVERED;
     }
 }
