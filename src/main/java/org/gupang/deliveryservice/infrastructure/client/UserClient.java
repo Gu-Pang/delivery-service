@@ -14,7 +14,7 @@ import java.util.UUID;
 public interface UserClient {
 
     @GetMapping("/api/v1/users/delivery-managers")
-    List<UserResponseDto> getDeliveryManager(@RequestParam UUID hubId, @RequestParam String deliveryType);
+    List<UserResponseDto> getDeliveryManager(@RequestParam UUID hubId);
 
 
     @PatchMapping("/api/v1/users/{userId}/status")

@@ -16,13 +16,18 @@ import java.util.UUID;
 public class MockUserClient implements UserClient{
 
     @Override
-    public List<UserResponseDto> getDeliveryManager(UUID userId, String deliveryType){
+    public List<UserResponseDto> getDeliveryManager(UUID hubId){
         return List.of(
+                new UserResponseDto(
+                        UUID.randomUUID(),
+                        "COMPANY",
+                        1,
+                        "AVAILABLE"),
                 new UserResponseDto(
                         UUID.randomUUID(),
                         "HUB",
                         1,
-                        "AVAILABLE"),
+                        "UNAVAILABLE"),
                 new UserResponseDto(
                         UUID.randomUUID(),
                         "HUB",
