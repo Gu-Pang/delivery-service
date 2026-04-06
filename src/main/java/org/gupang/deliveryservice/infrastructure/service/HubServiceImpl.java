@@ -2,15 +2,15 @@ package org.gupang.deliveryservice.infrastructure.service;
 
 import lombok.RequiredArgsConstructor;
 import org.gupang.deliveryservice.application.model.HubInfo;
-import org.gupang.deliveryservice.application.service.HubService;
+import org.gupang.deliveryservice.domain.service.HubService;
 import org.gupang.deliveryservice.infrastructure.client.HubClient;
 import org.gupang.deliveryservice.infrastructure.dto.HubResponseDto;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class HubServiceImpl implements HubService {
 

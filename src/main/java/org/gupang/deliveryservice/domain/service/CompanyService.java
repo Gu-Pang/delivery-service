@@ -1,4 +1,4 @@
-package org.gupang.deliveryservice.application.service;
+package org.gupang.deliveryservice.domain.service;
 
 import org.gupang.deliveryservice.application.model.CompanyInfo;
 
