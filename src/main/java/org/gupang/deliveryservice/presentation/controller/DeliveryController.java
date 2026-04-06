@@ -2,10 +2,13 @@ package org.gupang.deliveryservice.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
+import org.gupang.deliveryservice.application.dto.StartDeliveryCommand;
 import org.gupang.deliveryservice.application.service.DeliveryService;
 import org.gupang.deliveryservice.presentation.dto.request.CreateDeliveryRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +34,15 @@ public class DeliveryController {
         );
 
         deliveryService.createDelivery(command);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/start")
+    public ResponseEntity<Void> startDelivery (@PathVariable UUID id){
+        StartDeliveryCommand command = new StartDeliveryCommand(id);
+
+        deliveryService.startDelivery(command);
 
         return ResponseEntity.ok().build();
     }

@@ -4,6 +4,7 @@ import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.gupang.common.exception.CustomException;
 import org.gupang.common.exception.ErrorCode;
+import org.gupang.deliveryservice.application.dto.StartDeliveryCommand;
 import org.gupang.deliveryservice.application.model.CompanyInfo;
 import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
 import org.gupang.deliveryservice.application.model.HubInfo;
@@ -40,5 +41,13 @@ public class DeliveryService {
             //todo ErrorCode COMPANY_NOT_FOUND추가해서 적용
         }
 
+    }
+
+    public void startDelivery(StartDeliveryCommand command) {
+
+        Delivery delivery = deliveryRepository.findById(command.deliveryId())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        delivery.start();
     }
 }
