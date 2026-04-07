@@ -98,7 +98,9 @@ public class Delivery extends BaseEntity {
         delivery.endHubId = endHubId;
         delivery.address = address;
         delivery.addressDetail = addressDetail;
-        delivery.recipientName = recipientName;
+//        TODO: order에서 null로 전송되고 있어서 추후 오더 수정되면 같이 수정 해야함.
+//        delivery.recipientName = recipientName;
+        delivery.recipientName = "홍길동";
         delivery.status = DeliveryStatus.READY;
         delivery.deliveryDeadline = deliveryDeadline;
         return delivery;
@@ -112,13 +114,13 @@ public class Delivery extends BaseEntity {
 
         for (HubInfo hub : hubRoutes) {
             DeliveryRouteRecords route = DeliveryRouteRecords.create(
-                    hub.startHubId(),
-                    hub.startHubName(),
-                    hub.endHubId(),
-                    hub.endHubName(),
-                    hub.estimatedDistance(),
-                    hub.estimatedDuration(),
-                    sequence++
+                hub.startHubId(),
+                hub.startHubName(),
+                hub.endHubId(),
+                hub.endHubName(),
+                hub.estimatedDistance(),
+                hub.estimatedDuration(),
+                sequence++
             );
             addRoute(route);
             //todo 생성 책임 대부분 route로 이임
