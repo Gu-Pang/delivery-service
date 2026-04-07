@@ -5,9 +5,11 @@ import lombok.Getter;
 import org.gupang.common.entity.BaseEntity;
 import org.gupang.common.exception.CustomException;
 import org.gupang.common.exception.ErrorCode;
+import org.gupang.deliveryservice.application.model.UserInfo;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -96,6 +98,21 @@ public class DeliveryRouteRecords extends BaseEntity {
             throw new CustomException(ErrorCode.INVALID_INPUT_VALUE);
         }
         this.routeStatus = RouteStatus.COMPLETED;
+    }
+
+    public UUID assignManager(List<UserInfo> managers){
+        if(managers == null || managers.isEmpty()){
+            throw new CustomException(ErrorCode.NOT_FOUND);
+        }
+
+        UserInfo selected = managers.stream()
+                .sorted((a, b) -> Integer.compare(a.sequence(), b.sequence()))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
+
+        this.deliveryManagerId = selected.userId();
+
+        return selected.userId();
     }
 
 }

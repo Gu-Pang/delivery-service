@@ -2,10 +2,13 @@ package org.gupang.deliveryservice.application.service;
 
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.gupang.common.exception.CustomException;
 import org.gupang.common.exception.ErrorCode;
 import org.gupang.deliveryservice.application.dto.CompleteRouteCommand;
 import org.gupang.deliveryservice.application.dto.CreateDeliveryCommand;
+import org.gupang.deliveryservice.application.model.UserInfo;
+import org.gupang.deliveryservice.domain.service.UserService;
 import org.gupang.deliveryservice.presentation.dto.response.GetDeliveryResponseDto;
 import org.gupang.deliveryservice.application.dto.StartDeliveryCommand;
 import org.gupang.deliveryservice.application.model.CompanyInfo;
@@ -22,13 +25,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DeliveryService {
     private final DeliveryRepository deliveryRepository;
     private final CompanyService companyService;
     private final HubService hubService;
-
+    private final UserService userService;
 
 //    public void createDelivery(OrderReadyEvent event){
     //todo kafka붙일 때 event사용
@@ -58,6 +62,20 @@ public class DeliveryService {
         Delivery delivery = deliveryRepository.findById(command.deliveryId())
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
+        DeliveryRouteRecords firstRoute = delivery.getCurrentRoute();
+
+        try{
+            List<UserInfo> managers = userService.getUser(firstRoute.getStartHubId());
+
+            UUID managerId = firstRoute.assignManager(managers);
+
+            userService.updateStatus(managerId, "UNAVAILABLE");
+
+        }catch (FeignException e){
+            // 배정 실패 → 그냥 진행
+            log.warn("배송 담당자 배정 실패", e);
+        }
+
         delivery.start();
     }
 
@@ -68,6 +86,20 @@ public class DeliveryService {
                 .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND));
 
         delivery.completeRoute(command.routeId());
+
+        DeliveryRouteRecords nextRoute = delivery.getCurrentRoute();
+        if(nextRoute != null){
+            try {
+                List<UserInfo> managers = userService.getUser(nextRoute.getStartHubId());
+
+                UUID managerId = nextRoute.assignManager(managers);
+
+                userService.updateStatus(managerId, "UNAVAILABLE");
+            }catch (FeignException e){
+                // 배정 실패 → 그냥 진행
+                log.warn("배송 담당자 배정 실패", e);
+            }
+        }
     }
 
     public GetDeliveryResponseDto getDelivery(UUID deliveryId){
