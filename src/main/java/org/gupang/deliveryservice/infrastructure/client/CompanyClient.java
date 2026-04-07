@@ -2,13 +2,12 @@ package org.gupang.deliveryservice.infrastructure.client;
 
 import org.gupang.deliveryservice.infrastructure.dto.CompanyResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.UUID;
-@FeignClient(name = "company-service")
-@Profile("prod")
+
+@FeignClient(name = "company-server")
 public interface CompanyClient {
 
     @GetMapping("/api/v1/companies/{companyId}")
