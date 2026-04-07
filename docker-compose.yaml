@@ -1,0 +1,17 @@
+services:
+  hub-server:
+    build: .
+    container_name: delivery-server
+    ports:
+      - "19020:19020"
+    env_file:
+      - .env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://gupang-db:5432/${DB_DATABASE}
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka/
+    networks:
+      - gupang-network
+
+networks:
+  gupang-network:
+    external: true
